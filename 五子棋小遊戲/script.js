@@ -5,7 +5,7 @@ class GomokuGame {
         this.currentPlayer = 1; // 1 for black, 2 for white
         this.gameOver = false;
         this.winningLine = [];
-        this.gameMode = 'pvp'; // 'pvp' or 'pvc'
+        this.gameMode = 'pvc'; // 'pvp' or 'pvc'
         this.difficulty = 'medium';
         this.isAiThinking = false;
         
@@ -24,6 +24,22 @@ class GomokuGame {
                 cell.dataset.row = row;
                 cell.dataset.col = col;
                 cell.addEventListener('click', () => this.makeMove(row, col));
+                
+                // Add touch event handling for better mobile experience
+                cell.addEventListener('touchstart', (e) => {
+                    e.preventDefault(); // Prevent double-tap zoom
+                    cell.style.transform = 'scale(0.95)';
+                });
+                
+                cell.addEventListener('touchend', (e) => {
+                    e.preventDefault();
+                    cell.style.transform = '';
+                    this.makeMove(row, col);
+                });
+                
+                cell.addEventListener('touchcancel', () => {
+                    cell.style.transform = '';
+                });
                 gameBoard.appendChild(cell);
             }
         }
@@ -77,6 +93,11 @@ class GomokuGame {
             this.highlightWinningLine();
             const winner = this.currentPlayer === 1 ? '黑子' : '白子';
             this.updateGameStatus(`${winner} 獲勝！`, true);
+            
+            // 在挑戰AI模式中，如果玩家(黑子)獲勝，播放慶祝動畫
+            if (this.gameMode === 'pvc' && this.currentPlayer === 1) {
+                this.playCelebrationAnimation();
+            }
         } else if (this.checkDraw()) {
             this.gameOver = true;
             this.updateGameStatus('平局！', true);
@@ -206,6 +227,48 @@ class GomokuGame {
             return { row: Math.floor(this.boardSize / 2), col: Math.floor(this.boardSize / 2) };
         }
         
+        // 根據難度調整AI行為
+        if (this.difficulty === 'easy') {
+            return this.getEasyMove(moves);
+        } else if (this.difficulty === 'medium') {
+            return this.getMediumMove(moves);
+        } else {
+            return this.getHardMove(moves);
+        }
+    }
+    
+    getEasyMove(moves) {
+        // 簡單模式：30% 機率選擇最佳解，70% 機率隨機選擇
+        if (Math.random() < 0.3) {
+            return this.getBestMoveFromList(moves);
+        } else {
+            // 隨機選擇一個位置
+            return moves[Math.floor(Math.random() * moves.length)];
+        }
+    }
+    
+    getMediumMove(moves) {
+        // 中等模式：70% 機率選擇最佳解，30% 機率選擇次佳解
+        if (Math.random() < 0.7) {
+            return this.getBestMoveFromList(moves);
+        } else {
+            // 選擇次佳的幾個位置之一
+            const scoredMoves = moves.map(move => ({
+                move,
+                score: this.evaluateMove(move.row, move.col, 2)
+            })).sort((a, b) => b.score - a.score);
+            
+            const topMoves = scoredMoves.slice(0, Math.min(3, scoredMoves.length));
+            return topMoves[Math.floor(Math.random() * topMoves.length)].move;
+        }
+    }
+    
+    getHardMove(moves) {
+        // 困難模式：總是選擇最佳解
+        return this.getBestMoveFromList(moves);
+    }
+    
+    getBestMoveFromList(moves) {
         let bestMove = null;
         let bestScore = -Infinity;
         
@@ -327,6 +390,31 @@ class GomokuGame {
         
         this.updatePlayerDisplay();
         this.updateGameStatus('遊戲進行中');
+    }
+    
+    playCelebrationAnimation() {
+        // 創建慶祝元素
+        const celebration = document.createElement('div');
+        celebration.className = 'celebration-overlay';
+        celebration.innerHTML = `
+            <div class="celebration-content">
+                <div class="celebration-emoji">😸</div>
+                <div class="celebration-text">喵～恭喜小貓咪擊敗了AI！</div>
+                <div class="celebration-sub-text">🐾 你真是太厲害了！ 🐾</div>
+                <div class="celebration-fireworks">
+                    <div class="firework">🐱</div>
+                    <div class="firework">🐾</div>
+                    <div class="firework">😺</div>
+                </div>
+            </div>
+        `;
+        
+        document.body.appendChild(celebration);
+        
+        // 4秒後移除慶祝動畫
+        setTimeout(() => {
+            celebration.remove();
+        }, 4000);
     }
 }
 

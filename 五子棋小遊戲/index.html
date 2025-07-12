@@ -8,17 +8,17 @@
 </head>
 <body>
     <div class="container">
-        <h1>五子棋遊戲</h1>
+        <h1>🐱 五子棋遊戲 🐾</h1>
         
         <div class="game-controls">
             <div class="game-mode">
                 <label>遊戲模式:</label>
                 <select id="gameModeSelect">
+                    <option value="pvc">挑戰AI</option>
                     <option value="pvp">雙人對戰</option>
-                    <option value="pvc">對戰電腦</option>
                 </select>
             </div>
-            <div class="difficulty" id="difficultySection" style="display: none;">
+            <div class="difficulty" id="difficultySection">
                 <label>難度:</label>
                 <select id="difficultySelect">
                     <option value="easy">簡單</option>
@@ -32,7 +32,7 @@
             <div class="current-player">
                 目前玩家: <span id="playerDisplay">黑子</span>
             </div>
-            <button id="resetBtn" class="reset-btn">重新開始</button>
+            <button id="resetBtn" class="reset-btn">重新挑戰</button>
         </div>
         
         <div class="game-board" id="gameBoard">
