@@ -238,28 +238,33 @@ h1 {
 /* Mobile-first responsive design */
 @media (max-width: 480px) {
     body {
-        padding: 10px;
+        padding: 5px;
         align-items: flex-start;
-        padding-top: 20px;
+        padding-top: 10px;
+        min-height: 100vh;
+        overflow-x: hidden;
     }
     
     .container {
-        width: 100%;
-        max-width: 100%;
-        padding: 15px;
+        width: calc(100vw - 10px);
+        max-width: calc(100vw - 10px);
+        padding: 10px;
         margin: 0;
-        border-radius: 10px;
+        border-radius: 8px;
+        box-sizing: border-box;
     }
     
     h1 {
-        font-size: 1.8em;
-        margin-bottom: 15px;
+        font-size: 1.5em;
+        margin-bottom: 10px;
+        line-height: 1.2;
     }
     
     .game-controls {
         flex-direction: column;
-        gap: 15px;
-        padding: 10px;
+        gap: 10px;
+        padding: 8px;
+        margin-bottom: 10px;
     }
     
     .game-mode, .difficulty {
@@ -271,47 +276,63 @@ h1 {
     
     .game-controls select {
         width: 100%;
-        max-width: 200px;
-        padding: 10px;
+        max-width: 180px;
+        padding: 12px;
         font-size: 16px;
+        margin: 0 auto;
     }
     
     .game-info {
         flex-direction: column;
-        gap: 15px;
-        padding: 10px;
+        gap: 10px;
+        padding: 8px;
         text-align: center;
+        margin-bottom: 10px;
     }
     
     .current-player {
-        font-size: 1.1em;
+        font-size: 1em;
+        word-break: keep-all;
     }
     
     .reset-btn {
         width: 100%;
-        max-width: 200px;
+        max-width: 180px;
         padding: 12px 20px;
-        font-size: 1.1em;
+        font-size: 1em;
+        margin: 0 auto;
     }
     
     .game-board {
-        grid-template-columns: repeat(15, min(20px, calc((100vw - 60px) / 15)));
-        grid-template-rows: repeat(15, min(20px, calc((100vw - 60px) / 15)));
-        padding: 5px;
-        max-width: 100%;
-        overflow: visible;
+        width: calc(100vw - 30px);
+        height: calc(100vw - 30px);
+        max-width: 380px;
+        max-height: 380px;
+        margin: 0 auto;
+        padding: 4px;
+        display: grid;
+        grid-template-columns: repeat(15, 1fr);
+        grid-template-rows: repeat(15, 1fr);
+        gap: 1px;
+        aspect-ratio: 1;
+        box-sizing: border-box;
+        border-radius: 8px;
     }
     
     .cell {
-        width: min(20px, calc((100vw - 60px) / 15));
-        height: min(20px, calc((100vw - 60px) / 15));
-        min-width: 18px;
-        min-height: 18px;
+        width: 100%;
+        height: 100%;
+        min-width: 0;
+        min-height: 0;
+        aspect-ratio: 1;
+        touch-action: manipulation;
     }
     
     .game-status {
-        font-size: 1.1em;
-        padding: 12px;
+        font-size: 1em;
+        padding: 10px;
+        margin-top: 10px;
+        word-break: keep-all;
     }
 }
 
@@ -367,6 +388,13 @@ h1 {
 @media (hover: none) and (pointer: coarse) {
     .cell {
         cursor: pointer;
+        min-height: 44px;
+        min-width: 44px;
+    }
+    
+    .cell:active {
+        background: #f4e4bc;
+        transform: scale(0.95);
     }
     
     .cell:hover {
@@ -376,11 +404,13 @@ h1 {
     .reset-btn {
         padding: 15px 25px;
         font-size: 1.1em;
+        min-height: 44px;
     }
     
     .game-controls select {
         padding: 12px 15px;
         font-size: 16px;
+        min-height: 44px;
     }
 }
 
