@@ -23,22 +23,34 @@ class GomokuGame {
                 cell.className = 'cell';
                 cell.dataset.row = row;
                 cell.dataset.col = col;
-                cell.addEventListener('click', () => this.makeMove(row, col));
-                
                 // Add touch event handling for better mobile experience
+                let touchHandled = false;
+                
                 cell.addEventListener('touchstart', (e) => {
                     e.preventDefault(); // Prevent double-tap zoom
+                    touchHandled = true;
                     cell.style.transform = 'scale(0.95)';
                 });
                 
                 cell.addEventListener('touchend', (e) => {
                     e.preventDefault();
                     cell.style.transform = '';
-                    this.makeMove(row, col);
+                    if (touchHandled) {
+                        this.makeMove(row, col);
+                        touchHandled = false;
+                    }
                 });
                 
                 cell.addEventListener('touchcancel', () => {
                     cell.style.transform = '';
+                    touchHandled = false;
+                });
+                
+                // Fallback for non-touch devices
+                cell.addEventListener('click', () => {
+                    if (!touchHandled) {
+                        this.makeMove(row, col);
+                    }
                 });
                 gameBoard.appendChild(cell);
             }

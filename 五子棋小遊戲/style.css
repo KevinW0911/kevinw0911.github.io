@@ -237,6 +237,193 @@ h1 {
     }
 }
 
+/* iPhone 16 Pro specific fixes */
+@media screen and (device-width: 430px) and (device-height: 932px) and (-webkit-device-pixel-ratio: 3) {
+    body {
+        padding: 2px;
+        align-items: flex-start;
+        padding-top: 5px;
+        min-height: 100vh;
+        overflow-x: hidden;
+        position: relative;
+    }
+    
+    .container {
+        width: calc(100vw - 4px);
+        max-width: calc(100vw - 4px);
+        padding: 5px;
+        margin: 0;
+        border-radius: 6px;
+        box-sizing: border-box;
+    }
+    
+    h1 {
+        font-size: 1.3em;
+        margin-bottom: 5px;
+        line-height: 1.1;
+    }
+    
+    .game-controls {
+        flex-direction: column;
+        gap: 5px;
+        padding: 5px;
+        margin-bottom: 5px;
+    }
+    
+    .game-info {
+        flex-direction: column;
+        gap: 5px;
+        padding: 5px;
+        text-align: center;
+        margin-bottom: 5px;
+    }
+    
+    .current-player {
+        font-size: 0.9em;
+    }
+    
+    .reset-btn {
+        width: 100%;
+        max-width: 160px;
+        padding: 8px 15px;
+        font-size: 0.9em;
+        margin: 0 auto;
+    }
+    
+    .game-board {
+        width: calc(100vw - 20px);
+        height: calc(100vw - 20px);
+        max-width: 410px;
+        max-height: 410px;
+        margin: 0 auto;
+        padding: 2px;
+        display: grid;
+        grid-template-columns: repeat(15, 1fr);
+        grid-template-rows: repeat(15, 1fr);
+        gap: 0.5px;
+        aspect-ratio: 1;
+        box-sizing: border-box;
+        border-radius: 6px;
+    }
+    
+    .cell {
+        width: 100%;
+        height: 100%;
+        min-width: 0;
+        min-height: 0;
+        aspect-ratio: 1;
+        touch-action: manipulation;
+        border-radius: 0;
+        position: relative;
+        overflow: hidden;
+        border: 0.5px solid #8b4513;
+    }
+    
+    .cell.black,
+    .cell.white {
+        border-radius: 0;
+        position: relative;
+        background: #deb887;
+    }
+    
+    .cell.black::before,
+    .cell.white::before {
+        content: '';
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        width: 85%;
+        height: 85%;
+        border-radius: 50%;
+        transform: translate(-50%, -50%);
+        max-width: 24px;
+        max-height: 24px;
+    }
+    
+    .cell.black::before {
+        background: radial-gradient(circle, #2d3748, #1a202c);
+        box-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
+    }
+    
+    .cell.white::before {
+        background: radial-gradient(circle, #f7fafc, #e2e8f0);
+        box-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+    }
+    
+    .game-status {
+        font-size: 0.9em;
+        padding: 5px;
+        margin-top: 5px;
+        word-break: keep-all;
+    }
+}
+
+/* iPhone 16 Pro additional viewport fixes */
+@media screen and (max-width: 430px) and (min-width: 428px) {
+    body {
+        padding: 2px;
+        align-items: flex-start;
+        padding-top: 5px;
+        min-height: 100vh;
+        overflow-x: hidden;
+        position: relative;
+    }
+    
+    .container {
+        width: calc(100vw - 4px);
+        max-width: calc(100vw - 4px);
+        padding: 5px;
+        margin: 0;
+        border-radius: 6px;
+        box-sizing: border-box;
+    }
+    
+    .game-board {
+        width: calc(100vw - 20px);
+        height: calc(100vw - 20px);
+        max-width: 410px;
+        max-height: 410px;
+        margin: 0 auto;
+        padding: 2px;
+        display: grid;
+        grid-template-columns: repeat(15, 1fr);
+        grid-template-rows: repeat(15, 1fr);
+        gap: 0.5px;
+        aspect-ratio: 1;
+        box-sizing: border-box;
+        border-radius: 6px;
+    }
+    
+    .cell {
+        border: 0.5px solid #8b4513;
+        touch-action: manipulation;
+    }
+    
+    .cell.black::before,
+    .cell.white::before {
+        content: '';
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        width: 85%;
+        height: 85%;
+        border-radius: 50%;
+        transform: translate(-50%, -50%);
+        max-width: 24px;
+        max-height: 24px;
+    }
+    
+    .cell.black::before {
+        background: radial-gradient(circle, #2d3748, #1a202c);
+        box-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
+    }
+    
+    .cell.white::before {
+        background: radial-gradient(circle, #f7fafc, #e2e8f0);
+        box-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+    }
+}
+
 /* Mobile-first responsive design */
 @media (max-width: 480px) {
     body {
@@ -436,8 +623,10 @@ h1 {
 @media (hover: none) and (pointer: coarse) {
     .cell {
         cursor: pointer;
-        min-height: 44px;
-        min-width: 44px;
+        min-height: 25px;
+        min-width: 25px;
+        touch-action: manipulation;
+        -webkit-tap-highlight-color: rgba(0,0,0,0);
     }
     
     .cell:active {
@@ -449,16 +638,52 @@ h1 {
         background: #f4e4bc;
     }
     
+    .cell.black:active,
+    .cell.white:active {
+        transform: none;
+        background: #deb887;
+    }
+    
     .reset-btn {
         padding: 15px 25px;
         font-size: 1.1em;
         min-height: 44px;
+        touch-action: manipulation;
+        -webkit-tap-highlight-color: rgba(0,0,0,0);
     }
     
     .game-controls select {
         padding: 12px 15px;
         font-size: 16px;
         min-height: 44px;
+        touch-action: manipulation;
+        -webkit-tap-highlight-color: rgba(0,0,0,0);
+    }
+    
+    /* Additional iPhone 16 Pro touch optimizations */
+    @media screen and (max-width: 430px) {
+        .cell {
+            min-height: 22px;
+            min-width: 22px;
+            position: relative;
+        }
+        
+        .cell::after {
+            content: '';
+            position: absolute;
+            top: -2px;
+            left: -2px;
+            right: -2px;
+            bottom: -2px;
+            z-index: 1;
+        }
+        
+        .game-board {
+            touch-action: manipulation;
+            -webkit-touch-callout: none;
+            -webkit-user-select: none;
+            user-select: none;
+        }
     }
 }
 
