@@ -177,6 +177,7 @@ h1 {
     cursor: default;
     border-radius: 50%;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+    position: relative;
 }
 
 .cell.white {
@@ -184,6 +185,7 @@ h1 {
     cursor: default;
     border-radius: 50%;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+    position: relative;
 }
 
 .cell.black:hover,
@@ -326,6 +328,40 @@ h1 {
         min-height: 0;
         aspect-ratio: 1;
         touch-action: manipulation;
+        border-radius: 0;
+        position: relative;
+        overflow: hidden;
+    }
+    
+    .cell.black,
+    .cell.white {
+        border-radius: 0;
+        position: relative;
+        background: #deb887;
+    }
+    
+    .cell.black::before,
+    .cell.white::before {
+        content: '';
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        width: 80%;
+        height: 80%;
+        border-radius: 50%;
+        transform: translate(-50%, -50%);
+        max-width: 20px;
+        max-height: 20px;
+    }
+    
+    .cell.black::before {
+        background: radial-gradient(circle, #2d3748, #1a202c);
+        box-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
+    }
+    
+    .cell.white::before {
+        background: radial-gradient(circle, #f7fafc, #e2e8f0);
+        box-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
     }
     
     .game-status {
@@ -356,6 +392,12 @@ h1 {
         height: 25px;
     }
     
+    .cell.black::before,
+    .cell.white::before {
+        max-width: 18px;
+        max-height: 18px;
+    }
+    
     .game-controls {
         gap: 15px;
     }
@@ -375,6 +417,12 @@ h1 {
     .cell {
         width: 28px;
         height: 28px;
+    }
+    
+    .cell.black::before,
+    .cell.white::before {
+        max-width: 22px;
+        max-height: 22px;
     }
 }
 
