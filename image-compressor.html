@@ -1,0 +1,564 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>圖片批次壓縮工具</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            color: white;
+            text-align: center;
+            padding: 30px;
+        }
+
+        .header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+        }
+
+        .header p {
+            font-size: 1.1rem;
+            opacity: 0.9;
+        }
+
+        .main-content {
+            padding: 30px;
+        }
+
+        .upload-area {
+            border: 3px dashed #ddd;
+            border-radius: 12px;
+            padding: 60px 20px;
+            text-align: center;
+            background: #fafafa;
+            margin-bottom: 30px;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .upload-area:hover {
+            border-color: #4facfe;
+            background: #f0f8ff;
+        }
+
+        .upload-area.dragover {
+            border-color: #4facfe;
+            background: #e6f3ff;
+            transform: scale(1.02);
+        }
+
+        .upload-icon {
+            font-size: 3rem;
+            color: #888;
+            margin-bottom: 20px;
+        }
+
+        .upload-text {
+            font-size: 1.2rem;
+            color: #666;
+            margin-bottom: 10px;
+        }
+
+        .upload-hint {
+            color: #999;
+            font-size: 0.9rem;
+        }
+
+        .settings-panel {
+            background: #f8f9fa;
+            border-radius: 12px;
+            padding: 25px;
+            margin-bottom: 30px;
+        }
+
+        .settings-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+        }
+
+        .setting-group {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .setting-group label {
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: #333;
+        }
+
+        .setting-group input,
+        .setting-group select {
+            padding: 10px;
+            border: 2px solid #e1e5e9;
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: border-color 0.3s ease;
+        }
+
+        .setting-group input:focus,
+        .setting-group select:focus {
+            outline: none;
+            border-color: #4facfe;
+        }
+
+        .preview-area {
+            margin-bottom: 30px;
+        }
+
+        .image-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 20px;
+        }
+
+        .image-card {
+            background: white;
+            border-radius: 12px;
+            padding: 15px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+            border: 1px solid #f0f0f0;
+        }
+
+        .image-preview {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+            border-radius: 8px;
+            margin-bottom: 10px;
+        }
+
+        .image-info {
+            font-size: 0.9rem;
+            color: #666;
+        }
+
+        .image-info div {
+            margin-bottom: 5px;
+        }
+
+        .buttons {
+            text-align: center;
+            margin-top: 30px;
+        }
+
+        .btn {
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 25px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            margin: 0 10px;
+            transition: all 0.3s ease;
+            min-width: 150px;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(79, 172, 254, 0.3);
+        }
+
+        .btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
+        .btn-secondary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+
+        .progress {
+            width: 100%;
+            height: 8px;
+            background: #e1e5e9;
+            border-radius: 4px;
+            margin: 20px 0;
+            overflow: hidden;
+        }
+
+        .progress-bar {
+            height: 100%;
+            background: linear-gradient(90deg, #4facfe 0%, #00f2fe 100%);
+            border-radius: 4px;
+            transition: width 0.3s ease;
+            width: 0%;
+        }
+
+        .progress-text {
+            text-align: center;
+            margin-top: 10px;
+            color: #666;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        #fileInput {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🖼️ 圖片批次壓縮工具</h1>
+            <p>快速壓縮多張圖片，支援 JPEG、PNG、WebP 格式</p>
+        </div>
+
+        <div class="main-content">
+            <div class="upload-area" id="uploadArea">
+                <div class="upload-icon">📁</div>
+                <div class="upload-text">點擊或拖拽圖片到這裡</div>
+                <div class="upload-hint">支援 JPG、PNG、WebP 格式，可選擇多個檔案</div>
+                <input type="file" id="fileInput" multiple accept="image/*">
+            </div>
+
+            <div class="settings-panel">
+                <h3 style="margin-bottom: 20px; color: #333;">壓縮設定</h3>
+                <div class="settings-grid">
+                    <div class="setting-group">
+                        <label for="quality">圖片品質</label>
+                        <input type="range" id="quality" min="10" max="100" value="80">
+                        <span id="qualityValue">80%</span>
+                    </div>
+                    <div class="setting-group">
+                        <label for="maxWidth">最大寬度 (px)</label>
+                        <input type="number" id="maxWidth" value="1920" min="100" max="4000">
+                    </div>
+                    <div class="setting-group">
+                        <label for="maxHeight">最大高度 (px)</label>
+                        <input type="number" id="maxHeight" value="1080" min="100" max="4000">
+                    </div>
+                    <div class="setting-group">
+                        <label for="format">輸出格式</label>
+                        <select id="format">
+                            <option value="image/jpeg">JPEG</option>
+                            <option value="image/png">PNG</option>
+                            <option value="image/webp">WebP</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <div class="preview-area" id="previewArea" style="display: none;">
+                <h3 style="margin-bottom: 20px; color: #333;">圖片預覽</h3>
+                <div class="image-grid" id="imageGrid"></div>
+            </div>
+
+            <div class="progress hidden" id="progressContainer">
+                <div class="progress-bar" id="progressBar"></div>
+                <div class="progress-text" id="progressText">處理中...</div>
+            </div>
+
+            <div class="buttons">
+                <button class="btn" id="compressBtn" disabled>開始壓縮</button>
+                <button class="btn btn-secondary" id="downloadBtn" disabled>下載全部</button>
+                <button class="btn btn-secondary" id="clearBtn">清除全部</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 全域變數
+        let selectedFiles = [];
+        let compressedFiles = [];
+
+        // DOM 元素
+        const uploadArea = document.getElementById('uploadArea');
+        const fileInput = document.getElementById('fileInput');
+        const previewArea = document.getElementById('previewArea');
+        const imageGrid = document.getElementById('imageGrid');
+        const compressBtn = document.getElementById('compressBtn');
+        const downloadBtn = document.getElementById('downloadBtn');
+        const clearBtn = document.getElementById('clearBtn');
+        const progressContainer = document.getElementById('progressContainer');
+        const progressBar = document.getElementById('progressBar');
+        const progressText = document.getElementById('progressText');
+        const qualitySlider = document.getElementById('quality');
+        const qualityValue = document.getElementById('qualityValue');
+
+        // 初始化事件監聽器
+        function initEventListeners() {
+            // 檔案上傳相關
+            uploadArea.addEventListener('click', () => fileInput.click());
+            uploadArea.addEventListener('dragover', handleDragOver);
+            uploadArea.addEventListener('dragleave', handleDragLeave);
+            uploadArea.addEventListener('drop', handleDrop);
+            fileInput.addEventListener('change', handleFileSelect);
+
+            // 按鈕事件
+            compressBtn.addEventListener('click', compressImages);
+            downloadBtn.addEventListener('click', downloadAll);
+            clearBtn.addEventListener('click', clearAll);
+
+            // 品質滑桿
+            qualitySlider.addEventListener('input', (e) => {
+                qualityValue.textContent = e.target.value + '%';
+            });
+        }
+
+        // 拖拽處理
+        function handleDragOver(e) {
+            e.preventDefault();
+            uploadArea.classList.add('dragover');
+        }
+
+        function handleDragLeave(e) {
+            e.preventDefault();
+            uploadArea.classList.remove('dragover');
+        }
+
+        function handleDrop(e) {
+            e.preventDefault();
+            uploadArea.classList.remove('dragover');
+            const files = Array.from(e.dataTransfer.files);
+            processFiles(files);
+        }
+
+        // 檔案選擇處理
+        function handleFileSelect(e) {
+            const files = Array.from(e.target.files);
+            processFiles(files);
+        }
+
+        // 處理選擇的檔案
+        function processFiles(files) {
+            const imageFiles = files.filter(file => file.type.startsWith('image/'));
+            
+            if (imageFiles.length === 0) {
+                alert('請選擇圖片檔案！');
+                return;
+            }
+
+            selectedFiles = [...selectedFiles, ...imageFiles];
+            displayPreview();
+            compressBtn.disabled = false;
+        }
+
+        // 顯示圖片預覽
+        function displayPreview() {
+            previewArea.style.display = 'block';
+            imageGrid.innerHTML = '';
+
+            selectedFiles.forEach((file, index) => {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    const imageCard = createImageCard(e.target.result, file, index);
+                    imageGrid.appendChild(imageCard);
+                };
+                reader.readAsDataURL(file);
+            });
+        }
+
+        // 建立圖片卡片
+        function createImageCard(src, file, index) {
+            const card = document.createElement('div');
+            card.className = 'image-card';
+            
+            const sizeInMB = (file.size / 1024 / 1024).toFixed(2);
+            
+            card.innerHTML = `
+                <img src="${src}" alt="預覽" class="image-preview">
+                <div class="image-info">
+                    <div><strong>檔名:</strong> ${file.name}</div>
+                    <div><strong>大小:</strong> ${sizeInMB} MB</div>
+                    <div><strong>類型:</strong> ${file.type}</div>
+                    <div id="compressed-info-${index}" class="hidden">
+                        <div style="color: #28a745; font-weight: bold;">✓ 已壓縮</div>
+                    </div>
+                </div>
+            `;
+            
+            return card;
+        }
+
+        // 壓縮圖片
+        async function compressImages() {
+            if (selectedFiles.length === 0) return;
+
+            compressBtn.disabled = true;
+            downloadBtn.disabled = true;
+            progressContainer.classList.remove('hidden');
+            compressedFiles = [];
+
+            const quality = parseInt(qualitySlider.value) / 100;
+            const maxWidth = parseInt(document.getElementById('maxWidth').value);
+            const maxHeight = parseInt(document.getElementById('maxHeight').value);
+            const format = document.getElementById('format').value;
+
+            for (let i = 0; i < selectedFiles.length; i++) {
+                const file = selectedFiles[i];
+                progressText.textContent = `處理中: ${file.name} (${i + 1}/${selectedFiles.length})`;
+                progressBar.style.width = `${((i + 1) / selectedFiles.length) * 100}%`;
+
+                try {
+                    const compressedBlob = await compressImage(file, quality, maxWidth, maxHeight, format);
+                    compressedFiles.push({
+                        blob: compressedBlob,
+                        name: getCompressedFileName(file.name, format)
+                    });
+                    
+                    // 顯示壓縮完成標記
+                    const compressedInfo = document.getElementById(`compressed-info-${i}`);
+                    if (compressedInfo) {
+                        compressedInfo.classList.remove('hidden');
+                    }
+                } catch (error) {
+                    console.error('壓縮失敗:', error);
+                    alert(`${file.name} 壓縮失敗`);
+                }
+            }
+
+            progressText.textContent = '壓縮完成！';
+            downloadBtn.disabled = false;
+            compressBtn.disabled = false;
+        }
+
+        // 單個圖片壓縮函數
+        function compressImage(file, quality, maxWidth, maxHeight, format) {
+            return new Promise((resolve, reject) => {
+                const canvas = document.createElement('canvas');
+                const ctx = canvas.getContext('2d');
+                const img = new Image();
+
+                img.onload = function() {
+                    // 計算新的尺寸
+                    let { width, height } = calculateNewDimensions(img.width, img.height, maxWidth, maxHeight);
+                    
+                    canvas.width = width;
+                    canvas.height = height;
+                    
+                    // 繪製圖片
+                    ctx.drawImage(img, 0, 0, width, height);
+                    
+                    // 轉換為 Blob
+                    canvas.toBlob(resolve, format, quality);
+                };
+
+                img.onerror = reject;
+                img.src = URL.createObjectURL(file);
+            });
+        }
+
+        // 計算新尺寸
+        function calculateNewDimensions(originalWidth, originalHeight, maxWidth, maxHeight) {
+            let width = originalWidth;
+            let height = originalHeight;
+
+            if (width > maxWidth) {
+                height = (height * maxWidth) / width;
+                width = maxWidth;
+            }
+
+            if (height > maxHeight) {
+                width = (width * maxHeight) / height;
+                height = maxHeight;
+            }
+
+            return { width: Math.round(width), height: Math.round(height) };
+        }
+
+        // 產生壓縮後的檔名
+        function getCompressedFileName(originalName, format) {
+            const nameWithoutExt = originalName.substring(0, originalName.lastIndexOf('.'));
+            const extension = format.split('/')[1] === 'jpeg' ? 'jpg' : format.split('/')[1];
+            return `${nameWithoutExt}_compressed.${extension}`;
+        }
+
+        // 下載所有壓縮檔案
+        async function downloadAll() {
+            if (compressedFiles.length === 0) return;
+
+            if (compressedFiles.length === 1) {
+                // 單個檔案直接下載
+                downloadFile(compressedFiles[0].blob, compressedFiles[0].name);
+            } else {
+                // 多個檔案打包成 ZIP
+                const JSZip = await loadJSZip();
+                const zip = new JSZip();
+
+                compressedFiles.forEach(file => {
+                    zip.file(file.name, file.blob);
+                });
+
+                const zipBlob = await zip.generateAsync({ type: 'blob' });
+                downloadFile(zipBlob, 'compressed_images.zip');
+            }
+        }
+
+        // 載入 JSZip 函式庫
+        function loadJSZip() {
+            return new Promise((resolve, reject) => {
+                if (window.JSZip) {
+                    resolve(window.JSZip);
+                    return;
+                }
+
+                const script = document.createElement('script');
+                script.src = 'https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js';
+                script.onload = () => resolve(window.JSZip);
+                script.onerror = reject;
+                document.head.appendChild(script);
+            });
+        }
+
+        // 下載檔案
+        function downloadFile(blob, filename) {
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = filename;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+        }
+
+        // 清除所有內容
+        function clearAll() {
+            selectedFiles = [];
+            compressedFiles = [];
+            imageGrid.innerHTML = '';
+            previewArea.style.display = 'none';
+            progressContainer.classList.add('hidden');
+            compressBtn.disabled = true;
+            downloadBtn.disabled = true;
+            fileInput.value = '';
+            progressBar.style.width = '0%';
+        }
+
+        // 初始化應用程式
+        initEventListeners();
+    </script>
+</body>
+</html>
