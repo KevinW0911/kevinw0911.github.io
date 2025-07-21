@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>手機測試頁面</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 20px;
+            background-color: #000;
+            color: white;
+            font-family: Arial, sans-serif;
+            text-align: center;
+        }
+        .test-box {
+            background-color: #333;
+            padding: 20px;
+            margin: 20px auto;
+            max-width: 400px;
+            border-radius: 10px;
+        }
+        button {
+            background-color: #555;
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            margin: 10px;
+            border-radius: 5px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+        button:active {
+            background-color: #777;
+        }
+        #status {
+            color: #0f0;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <div class="test-box">
+        <h1>手機相容性測試</h1>
+        <p id="status">載入中...</p>
+        <button onclick="testFunction()">測試按鈕</button>
+        <button onclick="window.location.href='index.html'">回到遊戲</button>
+        
+        <div id="info">
+            <p>用戶代理: <span id="userAgent"></span></p>
+            <p>螢幕寬度: <span id="screenWidth"></span></p>
+            <p>是否為觸控設備: <span id="touchDevice"></span></p>
+        </div>
+    </div>
+
+    <script>
+        function testFunction() {
+            document.getElementById('status').textContent = '測試成功！JavaScript 正常運行';
+            document.getElementById('status').style.color = '#0f0';
+        }
+
+        function updateInfo() {
+            document.getElementById('userAgent').textContent = navigator.userAgent;
+            document.getElementById('screenWidth').textContent = window.innerWidth + 'px';
+            document.getElementById('touchDevice').textContent = 'ontouchstart' in window ? '是' : '否';
+            document.getElementById('status').textContent = '頁面載入完成';
+        }
+
+        // 當頁面載入完成時
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', updateInfo);
+        } else {
+            updateInfo();
+        }
+    </script>
+</body>
+</html>

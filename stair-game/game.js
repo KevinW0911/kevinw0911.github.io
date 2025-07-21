@@ -1,7 +1,15 @@
 class Game {
     constructor() {
         this.canvas = document.getElementById('gameCanvas');
+        if (!this.canvas) {
+            throw new Error('找不到遊戲畫布元素');
+        }
+        
         this.ctx = this.canvas.getContext('2d');
+        if (!this.ctx) {
+            throw new Error('無法取得2D繪圖上下文');
+        }
+        
         this.width = this.canvas.width;
         this.height = this.canvas.height;
         
@@ -81,57 +89,74 @@ class Game {
     }
     
     setupTouchControls() {
+        var self = this;
+        
         // 左移按鈕
-        document.getElementById('leftBtn').addEventListener('touchstart', (e) => {
-            e.preventDefault();
-            this.keys['ArrowLeft'] = true;
-        });
-        document.getElementById('leftBtn').addEventListener('touchend', (e) => {
-            e.preventDefault();
-            this.keys['ArrowLeft'] = false;
-        });
+        var leftBtn = document.getElementById('leftBtn');
+        if (leftBtn) {
+            leftBtn.addEventListener('touchstart', function(e) {
+                e.preventDefault();
+                self.keys['ArrowLeft'] = true;
+            });
+            leftBtn.addEventListener('touchend', function(e) {
+                e.preventDefault();
+                self.keys['ArrowLeft'] = false;
+            });
+        }
         
         // 右移按鈕
-        document.getElementById('rightBtn').addEventListener('touchstart', (e) => {
-            e.preventDefault();
-            this.keys['ArrowRight'] = true;
-        });
-        document.getElementById('rightBtn').addEventListener('touchend', (e) => {
-            e.preventDefault();
-            this.keys['ArrowRight'] = false;
-        });
+        var rightBtn = document.getElementById('rightBtn');
+        if (rightBtn) {
+            rightBtn.addEventListener('touchstart', function(e) {
+                e.preventDefault();
+                self.keys['ArrowRight'] = true;
+            });
+            rightBtn.addEventListener('touchend', function(e) {
+                e.preventDefault();
+                self.keys['ArrowRight'] = false;
+            });
+        }
         
         // 跳躍按鈕
-        document.getElementById('jumpBtn').addEventListener('touchstart', (e) => {
-            e.preventDefault();
-            this.keys['ArrowUp'] = true;
-        });
-        document.getElementById('jumpBtn').addEventListener('touchend', (e) => {
-            e.preventDefault();
-            this.keys['ArrowUp'] = false;
-        });
+        var jumpBtn = document.getElementById('jumpBtn');
+        if (jumpBtn) {
+            jumpBtn.addEventListener('touchstart', function(e) {
+                e.preventDefault();
+                self.keys['ArrowUp'] = true;
+            });
+            jumpBtn.addEventListener('touchend', function(e) {
+                e.preventDefault();
+                self.keys['ArrowUp'] = false;
+            });
+        }
         
         // 也支援滑鼠點擊（用於測試）
-        document.getElementById('leftBtn').addEventListener('mousedown', () => {
-            this.keys['ArrowLeft'] = true;
-        });
-        document.getElementById('leftBtn').addEventListener('mouseup', () => {
-            this.keys['ArrowLeft'] = false;
-        });
+        if (leftBtn) {
+            leftBtn.addEventListener('mousedown', function() {
+                self.keys['ArrowLeft'] = true;
+            });
+            leftBtn.addEventListener('mouseup', function() {
+                self.keys['ArrowLeft'] = false;
+            });
+        }
         
-        document.getElementById('rightBtn').addEventListener('mousedown', () => {
-            this.keys['ArrowRight'] = true;
-        });
-        document.getElementById('rightBtn').addEventListener('mouseup', () => {
-            this.keys['ArrowRight'] = false;
-        });
+        if (rightBtn) {
+            rightBtn.addEventListener('mousedown', function() {
+                self.keys['ArrowRight'] = true;
+            });
+            rightBtn.addEventListener('mouseup', function() {
+                self.keys['ArrowRight'] = false;
+            });
+        }
         
-        document.getElementById('jumpBtn').addEventListener('mousedown', () => {
-            this.keys['ArrowUp'] = true;
-        });
-        document.getElementById('jumpBtn').addEventListener('mouseup', () => {
-            this.keys['ArrowUp'] = false;
-        });
+        if (jumpBtn) {
+            jumpBtn.addEventListener('mousedown', function() {
+                self.keys['ArrowUp'] = true;
+            });
+            jumpBtn.addEventListener('mouseup', function() {
+                self.keys['ArrowUp'] = false;
+            });
+        }
     }
     
     startGame() {
@@ -146,8 +171,14 @@ class Game {
     }
     
     isMobileDevice() {
-        return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) || 
-               window.innerWidth <= 768;
+        // 檢查觸控支援
+        var hasTouch = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
+        // 檢查用戶代理
+        var mobileUA = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+        // 檢查螢幕寬度
+        var smallScreen = window.innerWidth <= 768;
+        
+        return hasTouch || mobileUA || smallScreen;
     }
     
     restartGame() {
@@ -469,7 +500,24 @@ class Game {
     }
 }
 
-// 啟動遊戲
+// 啟動遊戲 - 添加錯誤處理
 window.addEventListener('load', () => {
-    new Game();
+    try {
+        new Game();
+    } catch (error) {
+        console.error('遊戲啟動失敗:', error);
+        alert('遊戲載入失敗，請重新整理頁面');
+    }
+});
+
+// 備用啟動方法
+window.addEventListener('DOMContentLoaded', () => {
+    if (!window.gameLoaded) {
+        try {
+            new Game();
+            window.gameLoaded = true;
+        } catch (error) {
+            console.error('遊戲啟動失敗 (DOMContentLoaded):', error);
+        }
+    }
 });
