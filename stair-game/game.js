@@ -75,12 +75,79 @@ class Game {
             this.hideWinPage();
             this.backToMenu();
         });
+        
+        // 手機觸控控制
+        this.setupTouchControls();
+    }
+    
+    setupTouchControls() {
+        // 左移按鈕
+        document.getElementById('leftBtn').addEventListener('touchstart', (e) => {
+            e.preventDefault();
+            this.keys['ArrowLeft'] = true;
+        });
+        document.getElementById('leftBtn').addEventListener('touchend', (e) => {
+            e.preventDefault();
+            this.keys['ArrowLeft'] = false;
+        });
+        
+        // 右移按鈕
+        document.getElementById('rightBtn').addEventListener('touchstart', (e) => {
+            e.preventDefault();
+            this.keys['ArrowRight'] = true;
+        });
+        document.getElementById('rightBtn').addEventListener('touchend', (e) => {
+            e.preventDefault();
+            this.keys['ArrowRight'] = false;
+        });
+        
+        // 跳躍按鈕
+        document.getElementById('jumpBtn').addEventListener('touchstart', (e) => {
+            e.preventDefault();
+            this.keys['ArrowUp'] = true;
+        });
+        document.getElementById('jumpBtn').addEventListener('touchend', (e) => {
+            e.preventDefault();
+            this.keys['ArrowUp'] = false;
+        });
+        
+        // 也支援滑鼠點擊（用於測試）
+        document.getElementById('leftBtn').addEventListener('mousedown', () => {
+            this.keys['ArrowLeft'] = true;
+        });
+        document.getElementById('leftBtn').addEventListener('mouseup', () => {
+            this.keys['ArrowLeft'] = false;
+        });
+        
+        document.getElementById('rightBtn').addEventListener('mousedown', () => {
+            this.keys['ArrowRight'] = true;
+        });
+        document.getElementById('rightBtn').addEventListener('mouseup', () => {
+            this.keys['ArrowRight'] = false;
+        });
+        
+        document.getElementById('jumpBtn').addEventListener('mousedown', () => {
+            this.keys['ArrowUp'] = true;
+        });
+        document.getElementById('jumpBtn').addEventListener('mouseup', () => {
+            this.keys['ArrowUp'] = false;
+        });
     }
     
     startGame() {
         this.gameState = 'playing';
         document.getElementById('startBtn').style.display = 'none';
         document.getElementById('restartBtn').style.display = 'block';
+        
+        // 檢測是否為手機設備並顯示觸控控制
+        if (this.isMobileDevice()) {
+            document.getElementById('touchControls').style.display = 'block';
+        }
+    }
+    
+    isMobileDevice() {
+        return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) || 
+               window.innerWidth <= 768;
     }
     
     restartGame() {
@@ -323,6 +390,7 @@ class Game {
         this.gameState = 'waiting';
         document.getElementById('startBtn').style.display = 'block';
         document.getElementById('restartBtn').style.display = 'none';
+        document.getElementById('touchControls').style.display = 'none';
     }
     
     gameOver() {

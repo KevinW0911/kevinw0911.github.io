@@ -20,9 +20,20 @@
                 <div class="score">地下<span id="record">001</span>層</div>
             </div>
             <div class="controls">
-                <div class="control-hint">使用方向鍵控制小朋友</div>
+                <div class="control-hint">使用方向鍵或下方按鈕控制小朋友</div>
                 <button id="startBtn">開始遊戲</button>
                 <button id="restartBtn" style="display:none;">重新開始</button>
+                
+                <!-- 手機觸控控制 -->
+                <div id="touchControls" class="touch-controls" style="display:none;">
+                    <div class="touch-row">
+                        <button id="jumpBtn" class="touch-btn">跳躍</button>
+                    </div>
+                    <div class="touch-row">
+                        <button id="leftBtn" class="touch-btn">←</button>
+                        <button id="rightBtn" class="touch-btn">→</button>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
