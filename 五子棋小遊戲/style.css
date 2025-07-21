@@ -1,0 +1,868 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Arial', sans-serif;
+    background: linear-gradient(135deg, #ffeaa7 0%, #fab1a0 50%, #fd79a8 100%);
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: #333;
+    position: relative;
+}
+
+body::before {
+    content: '';
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-image: 
+        url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><text y="50" font-size="20" fill="rgba(255,255,255,0.01)">🐾</text></svg>'),
+        url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><text y="50" font-size="15" fill="rgba(255,255,255,0.02)">🐱</text></svg>');
+    background-size: 150px 150px, 100px 100px;
+    background-position: 0 0, 50px 50px;
+    pointer-events: none;
+    z-index: -1;
+}
+
+.container {
+    text-align: center;
+    background: rgba(255, 255, 255, 0.98);
+    padding: 30px;
+    border-radius: 25px;
+    box-shadow: 0 25px 50px rgba(0, 0, 0, 0.15);
+    border: 3px solid rgba(255, 182, 193, 0.3);
+    position: relative;
+}
+
+.container::before {
+    content: '🐾';
+    position: absolute;
+    top: -15px;
+    right: -15px;
+    font-size: 2em;
+}
+
+.container::after {
+    content: '🐱';
+    position: absolute;
+    bottom: -15px;
+    left: -15px;
+    font-size: 2em;
+}
+
+h1 {
+    color: #4a5568;
+    margin-bottom: 20px;
+    font-size: 2.5em;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.game-controls {
+    margin-bottom: 15px;
+    padding: 15px;
+    background: #e2e8f0;
+    border-radius: 10px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 20px;
+    flex-wrap: wrap;
+}
+
+.game-mode, .difficulty {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.game-controls label {
+    font-weight: bold;
+    color: #2d3748;
+}
+
+.game-controls select {
+    padding: 8px 12px;
+    border: 2px solid #cbd5e0;
+    border-radius: 6px;
+    background: white;
+    color: #2d3748;
+    font-size: 14px;
+    cursor: pointer;
+    transition: border-color 0.2s ease;
+}
+
+.game-controls select:focus {
+    outline: none;
+    border-color: #4299e1;
+}
+
+.game-info {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+    padding: 15px;
+    background: #f7fafc;
+    border-radius: 10px;
+}
+
+.current-player {
+    font-size: 1.2em;
+    font-weight: bold;
+    color: #2d3748;
+}
+
+#playerDisplay {
+    color: #e53e3e;
+    font-size: 1.1em;
+}
+
+.reset-btn {
+    padding: 10px 20px;
+    background: #4299e1;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 1em;
+    font-weight: bold;
+    transition: all 0.3s ease;
+}
+
+.reset-btn:hover {
+    background: #3182ce;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.game-board {
+    display: grid;
+    grid-template-columns: repeat(15, 30px);
+    grid-template-rows: repeat(15, 30px);
+    gap: 1px;
+    background: #8b4513;
+    padding: 10px;
+    border-radius: 10px;
+    margin: 0 auto;
+    box-shadow: inset 0 4px 8px rgba(0, 0, 0, 0.3);
+}
+
+.cell {
+    width: 30px;
+    height: 30px;
+    background: #deb887;
+    border: 1px solid #8b4513;
+    cursor: pointer;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    transition: all 0.2s ease;
+    position: relative;
+}
+
+.cell:hover {
+    background: #f4e4bc;
+    transform: scale(1.05);
+}
+
+.cell.black {
+    background: radial-gradient(circle, #2d3748, #1a202c);
+    cursor: default;
+    border-radius: 50%;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+    position: relative;
+}
+
+.cell.white {
+    background: radial-gradient(circle, #f7fafc, #e2e8f0);
+    cursor: default;
+    border-radius: 50%;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+    position: relative;
+}
+
+.cell.black:hover,
+.cell.white:hover {
+    transform: none;
+}
+
+.game-status {
+    margin-top: 20px;
+    font-size: 1.3em;
+    font-weight: bold;
+    color: #2d3748;
+    padding: 15px;
+    background: #edf2f7;
+    border-radius: 10px;
+    border-left: 5px solid #4299e1;
+}
+
+.winner {
+    color: #38a169 !important;
+    background: #f0fff4 !important;
+    border-left-color: #38a169 !important;
+    animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+    0% {
+        transform: scale(1);
+    }
+    50% {
+        transform: scale(1.02);
+    }
+    100% {
+        transform: scale(1);
+    }
+}
+
+.winning-line {
+    background: #ffd700 !important;
+    animation: glow 1s ease-in-out infinite alternate;
+}
+
+@keyframes glow {
+    from {
+        box-shadow: 0 0 5px #ffd700;
+    }
+    to {
+        box-shadow: 0 0 20px #ffd700;
+    }
+}
+
+/* iPhone 16 Pro specific fixes */
+@media screen and (device-width: 430px) and (device-height: 932px) and (-webkit-device-pixel-ratio: 3) {
+    body {
+        padding: 2px;
+        align-items: flex-start;
+        padding-top: 5px;
+        min-height: 100vh;
+        overflow-x: hidden;
+        position: relative;
+    }
+    
+    .container {
+        width: calc(100vw - 4px);
+        max-width: calc(100vw - 4px);
+        padding: 5px;
+        margin: 0;
+        border-radius: 6px;
+        box-sizing: border-box;
+    }
+    
+    h1 {
+        font-size: 1.3em;
+        margin-bottom: 5px;
+        line-height: 1.1;
+    }
+    
+    .game-controls {
+        flex-direction: column;
+        gap: 5px;
+        padding: 5px;
+        margin-bottom: 5px;
+    }
+    
+    .game-info {
+        flex-direction: column;
+        gap: 5px;
+        padding: 5px;
+        text-align: center;
+        margin-bottom: 5px;
+    }
+    
+    .current-player {
+        font-size: 0.9em;
+    }
+    
+    .reset-btn {
+        width: 100%;
+        max-width: 160px;
+        padding: 8px 15px;
+        font-size: 0.9em;
+        margin: 0 auto;
+    }
+    
+    .game-board {
+        width: calc(100vw - 20px);
+        height: calc(100vw - 20px);
+        max-width: 410px;
+        max-height: 410px;
+        margin: 0 auto;
+        padding: 2px;
+        display: grid;
+        grid-template-columns: repeat(15, 1fr);
+        grid-template-rows: repeat(15, 1fr);
+        gap: 0.5px;
+        aspect-ratio: 1;
+        box-sizing: border-box;
+        border-radius: 6px;
+    }
+    
+    .cell {
+        width: 100%;
+        height: 100%;
+        min-width: 0;
+        min-height: 0;
+        aspect-ratio: 1;
+        touch-action: manipulation;
+        border-radius: 0;
+        position: relative;
+        overflow: hidden;
+        border: 0.5px solid #8b4513;
+    }
+    
+    .cell.black,
+    .cell.white {
+        border-radius: 0;
+        position: relative;
+        background: #deb887;
+    }
+    
+    .cell.black::before,
+    .cell.white::before {
+        content: '';
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        width: 85%;
+        height: 85%;
+        border-radius: 50%;
+        transform: translate(-50%, -50%);
+        max-width: 24px;
+        max-height: 24px;
+    }
+    
+    .cell.black::before {
+        background: radial-gradient(circle, #2d3748, #1a202c);
+        box-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
+    }
+    
+    .cell.white::before {
+        background: radial-gradient(circle, #f7fafc, #e2e8f0);
+        box-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+    }
+    
+    .game-status {
+        font-size: 0.9em;
+        padding: 5px;
+        margin-top: 5px;
+        word-break: keep-all;
+    }
+}
+
+/* iPhone 16 Pro additional viewport fixes */
+@media screen and (max-width: 430px) and (min-width: 428px) {
+    body {
+        padding: 2px;
+        align-items: flex-start;
+        padding-top: 5px;
+        min-height: 100vh;
+        overflow-x: hidden;
+        position: relative;
+    }
+    
+    .container {
+        width: calc(100vw - 4px);
+        max-width: calc(100vw - 4px);
+        padding: 5px;
+        margin: 0;
+        border-radius: 6px;
+        box-sizing: border-box;
+    }
+    
+    .game-board {
+        width: calc(100vw - 20px);
+        height: calc(100vw - 20px);
+        max-width: 410px;
+        max-height: 410px;
+        margin: 0 auto;
+        padding: 2px;
+        display: grid;
+        grid-template-columns: repeat(15, 1fr);
+        grid-template-rows: repeat(15, 1fr);
+        gap: 0.5px;
+        aspect-ratio: 1;
+        box-sizing: border-box;
+        border-radius: 6px;
+    }
+    
+    .cell {
+        border: 0.5px solid #8b4513;
+        touch-action: manipulation;
+    }
+    
+    .cell.black::before,
+    .cell.white::before {
+        content: '';
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        width: 85%;
+        height: 85%;
+        border-radius: 50%;
+        transform: translate(-50%, -50%);
+        max-width: 24px;
+        max-height: 24px;
+    }
+    
+    .cell.black::before {
+        background: radial-gradient(circle, #2d3748, #1a202c);
+        box-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
+    }
+    
+    .cell.white::before {
+        background: radial-gradient(circle, #f7fafc, #e2e8f0);
+        box-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+    }
+}
+
+/* Mobile-first responsive design */
+@media (max-width: 480px) {
+    body {
+        padding: 5px;
+        align-items: flex-start;
+        padding-top: 10px;
+        min-height: 100vh;
+        overflow-x: hidden;
+    }
+    
+    .container {
+        width: calc(100vw - 10px);
+        max-width: calc(100vw - 10px);
+        padding: 10px;
+        margin: 0;
+        border-radius: 8px;
+        box-sizing: border-box;
+    }
+    
+    h1 {
+        font-size: 1.5em;
+        margin-bottom: 10px;
+        line-height: 1.2;
+    }
+    
+    .game-controls {
+        flex-direction: column;
+        gap: 10px;
+        padding: 8px;
+        margin-bottom: 10px;
+    }
+    
+    .game-mode, .difficulty {
+        flex-direction: column;
+        gap: 5px;
+        text-align: center;
+        width: 100%;
+    }
+    
+    .game-controls select {
+        width: 100%;
+        max-width: 180px;
+        padding: 12px;
+        font-size: 16px;
+        margin: 0 auto;
+    }
+    
+    .game-info {
+        flex-direction: column;
+        gap: 10px;
+        padding: 8px;
+        text-align: center;
+        margin-bottom: 10px;
+    }
+    
+    .current-player {
+        font-size: 1em;
+        word-break: keep-all;
+    }
+    
+    .reset-btn {
+        width: 100%;
+        max-width: 180px;
+        padding: 12px 20px;
+        font-size: 1em;
+        margin: 0 auto;
+    }
+    
+    .game-board {
+        width: calc(100vw - 30px);
+        height: calc(100vw - 30px);
+        max-width: 380px;
+        max-height: 380px;
+        margin: 0 auto;
+        padding: 4px;
+        display: grid;
+        grid-template-columns: repeat(15, 1fr);
+        grid-template-rows: repeat(15, 1fr);
+        gap: 1px;
+        aspect-ratio: 1;
+        box-sizing: border-box;
+        border-radius: 8px;
+    }
+    
+    .cell {
+        width: 100%;
+        height: 100%;
+        min-width: 0;
+        min-height: 0;
+        aspect-ratio: 1;
+        touch-action: manipulation;
+        border-radius: 0;
+        position: relative;
+        overflow: hidden;
+    }
+    
+    .cell.black,
+    .cell.white {
+        border-radius: 0;
+        position: relative;
+        background: #deb887;
+    }
+    
+    .cell.black::before,
+    .cell.white::before {
+        content: '';
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        width: 80%;
+        height: 80%;
+        border-radius: 50%;
+        transform: translate(-50%, -50%);
+        max-width: 20px;
+        max-height: 20px;
+    }
+    
+    .cell.black::before {
+        background: radial-gradient(circle, #2d3748, #1a202c);
+        box-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
+    }
+    
+    .cell.white::before {
+        background: radial-gradient(circle, #f7fafc, #e2e8f0);
+        box-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+    }
+    
+    .game-status {
+        font-size: 1em;
+        padding: 10px;
+        margin-top: 10px;
+        word-break: keep-all;
+    }
+}
+
+@media (min-width: 481px) and (max-width: 768px) {
+    .container {
+        padding: 20px;
+        max-width: 90%;
+    }
+    
+    h1 {
+        font-size: 2.2em;
+    }
+    
+    .game-board {
+        grid-template-columns: repeat(15, 25px);
+        grid-template-rows: repeat(15, 25px);
+    }
+    
+    .cell {
+        width: 25px;
+        height: 25px;
+    }
+    
+    .cell.black::before,
+    .cell.white::before {
+        max-width: 18px;
+        max-height: 18px;
+    }
+    
+    .game-controls {
+        gap: 15px;
+    }
+}
+
+@media (min-width: 769px) and (max-width: 1024px) {
+    .container {
+        padding: 25px;
+        max-width: 80%;
+    }
+    
+    .game-board {
+        grid-template-columns: repeat(15, 28px);
+        grid-template-rows: repeat(15, 28px);
+    }
+    
+    .cell {
+        width: 28px;
+        height: 28px;
+    }
+    
+    .cell.black::before,
+    .cell.white::before {
+        max-width: 22px;
+        max-height: 22px;
+    }
+}
+
+@media (min-width: 1025px) {
+    .container {
+        max-width: 700px;
+    }
+}
+
+/* Touch-friendly improvements */
+@media (hover: none) and (pointer: coarse) {
+    .cell {
+        cursor: pointer;
+        min-height: 25px;
+        min-width: 25px;
+        touch-action: manipulation;
+        -webkit-tap-highlight-color: rgba(0,0,0,0);
+    }
+    
+    .cell:active {
+        background: #f4e4bc;
+        transform: scale(0.95);
+    }
+    
+    .cell:hover {
+        background: #f4e4bc;
+    }
+    
+    .cell.black:active,
+    .cell.white:active {
+        transform: none;
+        background: #deb887;
+    }
+    
+    .reset-btn {
+        padding: 15px 25px;
+        font-size: 1.1em;
+        min-height: 44px;
+        touch-action: manipulation;
+        -webkit-tap-highlight-color: rgba(0,0,0,0);
+    }
+    
+    .game-controls select {
+        padding: 12px 15px;
+        font-size: 16px;
+        min-height: 44px;
+        touch-action: manipulation;
+        -webkit-tap-highlight-color: rgba(0,0,0,0);
+    }
+    
+    /* Additional iPhone 16 Pro touch optimizations */
+    @media screen and (max-width: 430px) {
+        .cell {
+            min-height: 22px;
+            min-width: 22px;
+            position: relative;
+        }
+        
+        .cell::after {
+            content: '';
+            position: absolute;
+            top: -2px;
+            left: -2px;
+            right: -2px;
+            bottom: -2px;
+            z-index: 1;
+        }
+        
+        .game-board {
+            touch-action: manipulation;
+            -webkit-touch-callout: none;
+            -webkit-user-select: none;
+            user-select: none;
+        }
+    }
+}
+
+/* 慶祝動畫樣式 */
+.celebration-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.8);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+    animation: fadeIn 0.5s ease-in;
+}
+
+.celebration-content {
+    text-align: center;
+    color: white;
+    animation: bounceIn 0.8s ease-out;
+}
+
+.celebration-emoji {
+    font-size: 4em;
+    animation: spin 2s ease-in-out infinite;
+    margin-bottom: 20px;
+}
+
+.celebration-text {
+    font-size: 2em;
+    font-weight: bold;
+    margin-bottom: 15px;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+    animation: glow 1.5s ease-in-out infinite alternate;
+}
+
+.celebration-sub-text {
+    font-size: 1.3em;
+    margin-bottom: 30px;
+    color: #ffd700;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+    animation: bounce 2s ease-in-out infinite;
+}
+
+.celebration-fireworks {
+    position: relative;
+    height: 100px;
+}
+
+.firework {
+    position: absolute;
+    font-size: 2em;
+    animation: catFirework 2s ease-out infinite;
+}
+
+.firework:nth-child(1) {
+    left: 20%;
+    animation-delay: 0s;
+}
+
+.firework:nth-child(2) {
+    left: 50%;
+    animation-delay: 0.7s;
+}
+
+.firework:nth-child(3) {
+    left: 80%;
+    animation-delay: 1.4s;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+@keyframes bounceIn {
+    0% {
+        transform: scale(0.3);
+        opacity: 0;
+    }
+    50% {
+        transform: scale(1.05);
+    }
+    70% {
+        transform: scale(0.9);
+    }
+    100% {
+        transform: scale(1);
+        opacity: 1;
+    }
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+@keyframes glow {
+    from {
+        text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+    }
+    to {
+        text-shadow: 2px 2px 20px rgba(255, 255, 255, 0.8), 
+                     0 0 30px rgba(255, 255, 255, 0.6);
+    }
+}
+
+@keyframes firework {
+    0% {
+        transform: translateY(0) scale(1);
+        opacity: 1;
+    }
+    50% {
+        transform: translateY(-50px) scale(1.2);
+        opacity: 0.8;
+    }
+    100% {
+        transform: translateY(-100px) scale(0.5);
+        opacity: 0;
+    }
+}
+
+@keyframes meowBounce {
+    0% {
+        transform: scale(0) rotate(0deg);
+        opacity: 0;
+    }
+    50% {
+        transform: scale(1.3) rotate(10deg);
+        opacity: 1;
+    }
+    100% {
+        transform: scale(1) rotate(0deg);
+        opacity: 1;
+    }
+}
+
+@keyframes bounce {
+    0%, 20%, 50%, 80%, 100% {
+        transform: translateY(0);
+    }
+    40% {
+        transform: translateY(-10px);
+    }
+    60% {
+        transform: translateY(-5px);
+    }
+}
+
+@keyframes catFirework {
+    0% {
+        transform: translateY(0) scale(1) rotate(0deg);
+        opacity: 1;
+    }
+    25% {
+        transform: translateY(-30px) scale(1.2) rotate(10deg);
+        opacity: 1;
+    }
+    50% {
+        transform: translateY(-60px) scale(1.5) rotate(-10deg);
+        opacity: 0.8;
+    }
+    75% {
+        transform: translateY(-40px) scale(1.1) rotate(5deg);
+        opacity: 0.6;
+    }
+    100% {
+        transform: translateY(-80px) scale(0.8) rotate(0deg);
+        opacity: 0;
+    }
+}
+
+@keyframes float {
+    0%, 100% {
+        transform: translateY(0) rotate(0deg);
+    }
+    50% {
+        transform: translateY(-15px) rotate(5deg);
+    }
+}
