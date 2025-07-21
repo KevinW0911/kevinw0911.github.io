@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>小朋友下樓梯</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="game-container">
+        <div class="game-area">
+            <canvas id="gameCanvas" width="640" height="480"></canvas>
+        </div>
+        <div class="ui-panel">
+            <div class="score-section">
+                <div class="level">地下<span id="level">001</span>層</div>
+                <div class="life">LIFE</div>
+                <div class="difficulty">DIFFICULTY:</div>
+                <div class="record">RECORD:</div>
+                <div class="score">地下<span id="record">001</span>層</div>
+            </div>
+            <div class="controls">
+                <div class="control-hint">使用方向鍵控制小朋友</div>
+                <button id="startBtn">開始遊戲</button>
+                <button id="restartBtn" style="display:none;">重新開始</button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- 恭喜過關頁面 -->
+    <div id="winPage" class="win-page" style="display:none;">
+        <div class="win-content">
+            <div class="win-title">🎉 恭喜破關！🎉</div>
+            <div class="win-subtitle">成功通過所有100關！</div>
+            <div class="win-message">您是真正的小朋友下樓梯大師！</div>
+            <div class="win-stats">
+                <div class="stat-item">
+                    <span class="stat-label">最終記錄：</span>
+                    <span class="stat-value">地下<span id="finalRecord">100</span>層</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-label">遊戲完成度：</span>
+                    <span class="stat-value">100%</span>
+                </div>
+            </div>
+            <div class="win-actions">
+                <button id="playAgainBtn" class="win-btn primary">再玩一次</button>
+                <button id="backToMenuBtn" class="win-btn secondary">返回選單</button>
+            </div>
+            <div class="win-decoration">
+                ⭐ ⭐ ⭐ ⭐ ⭐
+            </div>
+        </div>
+    </div>
+    <script src="game.js"></script>
+</body>
+</html>
