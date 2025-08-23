@@ -4,10 +4,12 @@ class FireGame {
         this.fireParticles = document.getElementById('fireParticles');
         this.fireBtn = document.getElementById('fireBtn');
         this.bombBtn = document.getElementById('bombBtn');
+        this.waterBtn = document.getElementById('waterBtn');
         
         this.clickCounter = 0;
         this.isBreathing = false;
         this.isThrowing = false;
+        this.isWatering = false;
         this.isTouching = false;
         
         this.init();
@@ -16,6 +18,7 @@ class FireGame {
     init() {
         this.fireBtn.addEventListener('click', () => this.breatheFire());
         this.bombBtn.addEventListener('click', () => this.throwBomb());
+        this.waterBtn.addEventListener('click', () => this.addWater());
         this.gameArea.addEventListener('click', (e) => this.createFireAtPosition(e));
         
         this.gameArea.addEventListener('mousemove', (e) => this.handleMouseMove(e));
@@ -32,6 +35,10 @@ class FireGame {
             if (e.code === 'KeyB') {
                 e.preventDefault();
                 this.throwBomb();
+            }
+            if (e.code === 'KeyW') {
+                e.preventDefault();
+                this.addWater();
             }
         });
     }
@@ -63,6 +70,20 @@ class FireGame {
         setTimeout(() => {
             this.isThrowing = false;
         }, 300);
+    }
+    
+    addWater() {
+        if (this.isWatering) return;
+        
+        this.isWatering = true;
+        this.clickCounter++;
+        
+        this.playWaterSound();
+        this.createWaterBurst();
+        
+        setTimeout(() => {
+            this.isWatering = false;
+        }, 500);
     }
     
     createFireBurst() {
@@ -165,6 +186,90 @@ class FireGame {
         }
     }
     
+    createWaterBurst() {
+        const centerX = this.gameArea.offsetWidth / 2;
+        const centerY = this.gameArea.offsetHeight / 2;
+        
+        for (let i = 0; i < 12; i++) {
+            setTimeout(() => {
+                const angle = (Math.PI * 2 * i) / 12;
+                const distance = 40 + Math.random() * 80;
+                const x = centerX + Math.cos(angle) * distance;
+                const y = centerY + Math.sin(angle) * distance;
+                
+                this.createWaterParticle(x, y);
+            }, i * 60);
+        }
+        
+        for (let i = 0; i < 15; i++) {
+            setTimeout(() => {
+                const x = centerX + (Math.random() - 0.5) * 150;
+                const y = centerY + (Math.random() - 0.5) * 120;
+                this.createWaterDrop(x, y);
+            }, i * 40);
+        }
+        
+        this.createWaterSplash(centerX, centerY);
+    }
+    
+    createWaterSplash(x, y) {
+        const splash = document.createElement('div');
+        splash.className = 'water-splash';
+        splash.style.left = (x - 40) + 'px';
+        splash.style.top = (y - 40) + 'px';
+        
+        const splashCircle = document.createElement('div');
+        splashCircle.className = 'water-splash-circle';
+        splash.appendChild(splashCircle);
+        
+        for (let i = 0; i < 8; i++) {
+            const ripple = document.createElement('div');
+            ripple.className = 'water-ripple';
+            const angle = (Math.PI * 2 * i) / 8;
+            const distance = 10 + Math.random() * 20;
+            ripple.style.left = (40 + Math.cos(angle) * distance) + 'px';
+            ripple.style.top = (40 + Math.sin(angle) * distance) + 'px';
+            
+            const colors = ['#4dd0e1', '#00b4d8', '#0077b6', '#87ceeb'];
+            ripple.style.background = `radial-gradient(circle, ${colors[Math.floor(Math.random() * colors.length)]}, #0077b6)`;
+            
+            splash.appendChild(ripple);
+        }
+        
+        this.fireParticles.appendChild(splash);
+        
+        for (let i = 0; i < 20; i++) {
+            setTimeout(() => {
+                const offsetX = x + (Math.random() - 0.5) * 100;
+                const offsetY = y + (Math.random() - 0.5) * 100;
+                this.createWaterParticle(offsetX, offsetY);
+            }, i * 25);
+        }
+        
+        setTimeout(() => {
+            if (splash.parentNode) {
+                splash.parentNode.removeChild(splash);
+            }
+        }, 1000);
+    }
+    
+    createWaterAtPosition(e) {
+        const rect = this.gameArea.getBoundingClientRect();
+        const x = e.clientX - rect.left;
+        const y = e.clientY - rect.top;
+        
+        this.createWaterParticle(x, y);
+        this.createWaterDrop(x, y);
+        
+        for (let i = 0; i < 2; i++) {
+            setTimeout(() => {
+                const offsetX = x + (Math.random() - 0.5) * 20;
+                const offsetY = y + (Math.random() - 0.5) * 20;
+                this.createWaterParticle(offsetX, offsetY);
+            }, i * 150);
+        }
+    }
+    
     createFireAtPosition(e) {
         const rect = this.gameArea.getBoundingClientRect();
         const x = e.clientX - rect.left;
@@ -224,6 +329,48 @@ class FireGame {
                 flame.parentNode.removeChild(flame);
             }
         }, 1500);
+    }
+    
+    createWaterParticle(x, y) {
+        const particle = document.createElement('div');
+        particle.className = 'water-particle';
+        particle.style.left = x + 'px';
+        particle.style.top = y + 'px';
+        
+        const size = 6 + Math.random() * 6;
+        particle.style.width = size + 'px';
+        particle.style.height = size + 'px';
+        
+        const blues = ['#4dd0e1', '#00b4d8', '#0077b6', '#87ceeb', '#1e90ff'];
+        const color1 = blues[Math.floor(Math.random() * blues.length)];
+        const color2 = blues[Math.floor(Math.random() * blues.length)];
+        particle.style.background = `radial-gradient(circle, ${color1}, ${color2})`;
+        
+        this.fireParticles.appendChild(particle);
+        
+        setTimeout(() => {
+            if (particle.parentNode) {
+                particle.parentNode.removeChild(particle);
+            }
+        }, 2500);
+    }
+    
+    createWaterDrop(x, y) {
+        const drop = document.createElement('div');
+        drop.className = 'water-drop';
+        drop.style.left = (x - 6) + 'px';
+        drop.style.top = (y - 8) + 'px';
+        
+        const size = 0.8 + Math.random() * 0.4;
+        drop.style.transform = `scale(${size})`;
+        
+        this.fireParticles.appendChild(drop);
+        
+        setTimeout(() => {
+            if (drop.parentNode) {
+                drop.parentNode.removeChild(drop);
+            }
+        }, 2000);
     }
     
     handleMouseMove(e) {
@@ -293,6 +440,28 @@ class FireGame {
         oscillator.type = 'sawtooth';
         oscillator.start(audioContext.currentTime);
         oscillator.stop(audioContext.currentTime + 0.5);
+    }
+    
+    playWaterSound() {
+        const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+        
+        const oscillator = audioContext.createOscillator();
+        const gainNode = audioContext.createGain();
+        
+        oscillator.connect(gainNode);
+        gainNode.connect(audioContext.destination);
+        
+        oscillator.frequency.setValueAtTime(800, audioContext.currentTime);
+        oscillator.frequency.exponentialRampToValueAtTime(400, audioContext.currentTime + 0.3);
+        oscillator.frequency.exponentialRampToValueAtTime(200, audioContext.currentTime + 0.6);
+        
+        gainNode.gain.setValueAtTime(0.2, audioContext.currentTime);
+        gainNode.gain.exponentialRampToValueAtTime(0.1, audioContext.currentTime + 0.3);
+        gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.6);
+        
+        oscillator.type = 'sine';
+        oscillator.start(audioContext.currentTime);
+        oscillator.stop(audioContext.currentTime + 0.6);
     }
 }
 

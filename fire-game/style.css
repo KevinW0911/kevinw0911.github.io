@@ -114,7 +114,7 @@ h1 {
     margin: 20px 0;
 }
 
-.fire-button, .bomb-button {
+.fire-button, .bomb-button, .water-button {
     padding: 15px 30px;
     font-size: 1.2rem;
     border: none;
@@ -167,6 +167,28 @@ h1 {
 }
 
 @keyframes bombButtonPulse {
+    0% { transform: scale(1); }
+    50% { transform: scale(0.95); }
+    100% { transform: scale(1); }
+}
+
+.water-button {
+    background: linear-gradient(45deg, #00b4d8, #0077b6);
+    color: white;
+}
+
+.water-button:hover {
+    background: linear-gradient(45deg, #0077b6, #023e8a);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(0, 119, 182, 0.4);
+}
+
+.water-button:active {
+    transform: translateY(0);
+    animation: waterButtonPulse 0.3s ease;
+}
+
+@keyframes waterButtonPulse {
     0% { transform: scale(1); }
     50% { transform: scale(0.95); }
     100% { transform: scale(1); }
@@ -342,6 +364,135 @@ h1 {
     80% { transform: translateX(1px); }
 }
 
+.water-particle {
+    position: absolute;
+    width: 8px;
+    height: 8px;
+    background: radial-gradient(circle, #4dd0e1, #0077b6);
+    border-radius: 50%;
+    pointer-events: none;
+    animation: waterParticle 2.5s ease-out forwards;
+}
+
+@keyframes waterParticle {
+    0% {
+        opacity: 1;
+        transform: scale(1) translateY(0);
+    }
+    25% {
+        opacity: 0.9;
+        transform: scale(1.2) translateY(20px);
+    }
+    50% {
+        opacity: 0.8;
+        transform: scale(1.4) translateY(40px);
+    }
+    75% {
+        opacity: 0.5;
+        transform: scale(1.2) translateY(60px);
+    }
+    100% {
+        opacity: 0;
+        transform: scale(0.8) translateY(100px);
+    }
+}
+
+.water-drop {
+    position: absolute;
+    width: 12px;
+    height: 16px;
+    background: radial-gradient(circle at 30% 40%, #87ceeb, #4682b4, #1e90ff);
+    border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%;
+    pointer-events: none;
+    animation: waterDrop 2s ease-in forwards;
+    box-shadow: inset 2px 2px 4px rgba(255, 255, 255, 0.3);
+}
+
+@keyframes waterDrop {
+    0% {
+        opacity: 1;
+        transform: scale(0.5) translateY(-20px);
+    }
+    30% {
+        opacity: 0.9;
+        transform: scale(1) translateY(0px);
+    }
+    60% {
+        opacity: 0.7;
+        transform: scale(1.1) translateY(30px);
+    }
+    100% {
+        opacity: 0;
+        transform: scale(0.3) translateY(80px);
+    }
+}
+
+.water-splash {
+    position: absolute;
+    pointer-events: none;
+    z-index: 6;
+}
+
+.water-splash-circle {
+    position: absolute;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(77, 208, 225, 0.8), rgba(0, 119, 182, 0.4), transparent);
+    animation: waterSplash 1s ease-out forwards;
+}
+
+@keyframes waterSplash {
+    0% {
+        width: 10px;
+        height: 10px;
+        opacity: 1;
+        transform: scale(0);
+    }
+    50% {
+        opacity: 0.8;
+        transform: scale(1);
+    }
+    100% {
+        width: 80px;
+        height: 80px;
+        opacity: 0;
+        transform: scale(1.5);
+    }
+}
+
+.water-ripple {
+    position: absolute;
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: radial-gradient(circle, #4dd0e1, #0077b6);
+    pointer-events: none;
+    animation: waterRipple 1.8s ease-out forwards;
+    box-shadow: 0 0 6px rgba(77, 208, 225, 0.6);
+}
+
+@keyframes waterRipple {
+    0% {
+        opacity: 1;
+        transform: scale(1) rotate(0deg);
+    }
+    25% {
+        opacity: 0.8;
+        transform: scale(1.5) rotate(90deg) translateX(30px);
+    }
+    50% {
+        opacity: 0.6;
+        transform: scale(2) rotate(180deg) translateX(50px);
+    }
+    75% {
+        opacity: 0.3;
+        transform: scale(2.5) rotate(270deg) translateX(70px);
+    }
+    100% {
+        opacity: 0;
+        transform: scale(3) rotate(360deg) translateX(90px);
+    }
+}
+
 @media (max-width: 600px) {
     body {
         padding-top: 10px;
@@ -375,7 +526,7 @@ h1 {
         margin: 15px 0;
     }
     
-    .fire-button, .bomb-button {
+    .fire-button, .bomb-button, .water-button {
         padding: 12px 25px;
         font-size: 1rem;
     }
