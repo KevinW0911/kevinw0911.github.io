@@ -5,6 +5,7 @@ class FireGame {
         this.fireBtn = document.getElementById('fireBtn');
         this.bombBtn = document.getElementById('bombBtn');
         
+        this.clickCounter = 0;
         this.isBreathing = false;
         this.isThrowing = false;
         this.isTouching = false;
@@ -39,6 +40,7 @@ class FireGame {
         if (this.isBreathing) return;
         
         this.isBreathing = true;
+        this.clickCounter++;
         
         this.createFireBurst();
         
@@ -51,6 +53,7 @@ class FireGame {
         if (this.isThrowing) return;
         
         this.isThrowing = true;
+        this.clickCounter++;
         
         const targetX = Math.random() * (this.gameArea.offsetWidth - 40) + 20;
         const targetY = Math.random() * (this.gameArea.offsetHeight - 40) + 20;
@@ -255,7 +258,6 @@ class FireGame {
     clearFire() {
         this.fireParticles.innerHTML = '';
         this.clickCounter = 0;
-        this.clickCount.textContent = this.clickCounter;
         
         this.gameArea.style.animation = 'none';
         setTimeout(() => {
