@@ -10,6 +10,7 @@ class FireGame {
         this.clickCounter = 0;
         this.isBreathing = false;
         this.isThrowing = false;
+        this.isTouching = false;
         
         this.init();
     }
@@ -21,6 +22,10 @@ class FireGame {
         this.gameArea.addEventListener('click', (e) => this.createFireAtPosition(e));
         
         this.gameArea.addEventListener('mousemove', (e) => this.handleMouseMove(e));
+        
+        this.gameArea.addEventListener('touchstart', (e) => this.handleTouchStart(e));
+        this.gameArea.addEventListener('touchmove', (e) => this.handleTouchMove(e));
+        this.gameArea.addEventListener('touchend', (e) => this.handleTouchEnd(e));
         
         document.addEventListener('keydown', (e) => {
             if (e.code === 'Space') {
@@ -230,6 +235,29 @@ class FireGame {
         if (e.buttons === 1) {
             this.createFireAtPosition(e);
         }
+    }
+    
+    handleTouchStart(e) {
+        e.preventDefault();
+        this.isTouching = true;
+        const touch = e.touches[0];
+        const rect = this.gameArea.getBoundingClientRect();
+        const x = touch.clientX - rect.left;
+        const y = touch.clientY - rect.top;
+        this.createFireAtPosition({ clientX: touch.clientX, clientY: touch.clientY });
+    }
+    
+    handleTouchMove(e) {
+        e.preventDefault();
+        if (this.isTouching) {
+            const touch = e.touches[0];
+            this.createFireAtPosition({ clientX: touch.clientX, clientY: touch.clientY });
+        }
+    }
+    
+    handleTouchEnd(e) {
+        e.preventDefault();
+        this.isTouching = false;
     }
     
     clearFire() {
