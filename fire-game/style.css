@@ -112,7 +112,7 @@ h1 {
     margin: 20px 0;
 }
 
-.fire-button, .bomb-button, .clear-button {
+.fire-button, .bomb-button {
     padding: 15px 30px;
     font-size: 1.2rem;
     border: none;
@@ -170,16 +170,6 @@ h1 {
     100% { transform: scale(1); }
 }
 
-.clear-button {
-    background: linear-gradient(45deg, #6c5ce7, #a29bfe);
-    color: white;
-}
-
-.clear-button:hover {
-    background: linear-gradient(45deg, #a29bfe, #c7c2ff);
-    transform: translateY(-2px);
-    box-shadow: 0 6px 20px rgba(108, 92, 231, 0.4);
-}
 
 .stats {
     color: #ffffff;
@@ -375,7 +365,7 @@ h1 {
         gap: 10px;
     }
     
-    .fire-button, .bomb-button, .clear-button {
+    .fire-button, .bomb-button {
         padding: 12px 25px;
         font-size: 1rem;
     }

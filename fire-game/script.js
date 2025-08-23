@@ -4,7 +4,6 @@ class FireGame {
         this.fireParticles = document.getElementById('fireParticles');
         this.fireBtn = document.getElementById('fireBtn');
         this.bombBtn = document.getElementById('bombBtn');
-        this.clearBtn = document.getElementById('clearBtn');
         this.clickCount = document.getElementById('clickCount');
         
         this.clickCounter = 0;
@@ -18,7 +17,6 @@ class FireGame {
     init() {
         this.fireBtn.addEventListener('click', () => this.breatheFire());
         this.bombBtn.addEventListener('click', () => this.throwBomb());
-        this.clearBtn.addEventListener('click', () => this.clearFire());
         this.gameArea.addEventListener('click', (e) => this.createFireAtPosition(e));
         
         this.gameArea.addEventListener('mousemove', (e) => this.handleMouseMove(e));
