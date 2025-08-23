@@ -173,15 +173,6 @@ h1 {
 }
 
 
-.stats {
-    color: #ffffff;
-    font-size: 1.1rem;
-    margin-top: 15px;
-    background: rgba(255, 255, 255, 0.1);
-    padding: 10px 20px;
-    border-radius: 15px;
-    display: inline-block;
-}
 
 .flame-effect {
     position: absolute;
@@ -389,9 +380,4 @@ h1 {
         font-size: 1rem;
     }
     
-    .stats {
-        font-size: 1rem;
-        margin-top: 10px;
-        padding: 8px 16px;
-    }
 }
