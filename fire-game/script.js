@@ -132,6 +132,7 @@ class FireGame {
         
         const explosionColors = [
             'radial-gradient(circle, #ffffff, #ffff00, #ff6600, #ff0000, #8b0000, transparent)',
+            'radial-gradient(circle, #ffffff, #ffff00, #ff6600, #ff0000, #8b0000, transparent)',
             'radial-gradient(circle, #ffffff, #f0f0f0, #d3d3d3, #a9a9a9, #696969, transparent)',
             'radial-gradient(circle, #ffffff, #e6e6e6, #cccccc, #808080, #404040, transparent)'
         ];
