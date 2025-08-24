@@ -364,132 +364,175 @@ h1 {
     80% { transform: translateX(1px); }
 }
 
-.water-particle {
+.water-level {
     position: absolute;
-    width: 8px;
-    height: 8px;
-    background: radial-gradient(circle, #4dd0e1, #0077b6);
-    border-radius: 50%;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 0%;
+    background: linear-gradient(to top, 
+        #006994 0%, 
+        #0077b6 20%, 
+        #0096c7 40%, 
+        #00b4d8 60%, 
+        #48cae4 80%, 
+        #90e0ef 100%);
     pointer-events: none;
-    animation: waterParticle 2.5s ease-out forwards;
+    z-index: 1;
+    opacity: 0;
+    animation: waterRise 3s ease-out forwards;
 }
 
-@keyframes waterParticle {
+@keyframes waterRise {
     0% {
-        opacity: 1;
-        transform: scale(1) translateY(0);
+        height: 0%;
+        opacity: 0;
     }
-    25% {
-        opacity: 0.9;
-        transform: scale(1.2) translateY(20px);
-    }
-    50% {
+    20% {
         opacity: 0.8;
-        transform: scale(1.4) translateY(40px);
-    }
-    75% {
-        opacity: 0.5;
-        transform: scale(1.2) translateY(60px);
     }
     100% {
-        opacity: 0;
-        transform: scale(0.8) translateY(100px);
-    }
-}
-
-.water-drop {
-    position: absolute;
-    width: 12px;
-    height: 16px;
-    background: radial-gradient(circle at 30% 40%, #87ceeb, #4682b4, #1e90ff);
-    border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%;
-    pointer-events: none;
-    animation: waterDrop 2s ease-in forwards;
-    box-shadow: inset 2px 2px 4px rgba(255, 255, 255, 0.3);
-}
-
-@keyframes waterDrop {
-    0% {
-        opacity: 1;
-        transform: scale(0.5) translateY(-20px);
-    }
-    30% {
+        height: 100%;
         opacity: 0.9;
-        transform: scale(1) translateY(0px);
+    }
+}
+
+.water-surface {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 20px;
+    background: linear-gradient(to right, 
+        rgba(144, 224, 239, 0.6) 0%, 
+        rgba(72, 202, 228, 0.8) 25%, 
+        rgba(0, 180, 216, 0.6) 50%, 
+        rgba(72, 202, 228, 0.8) 75%, 
+        rgba(144, 224, 239, 0.6) 100%);
+    animation: waterWave 2s ease-in-out infinite;
+    z-index: 2;
+}
+
+@keyframes waterWave {
+    0%, 100% {
+        transform: translateX(-10px);
+        opacity: 0.6;
+    }
+    50% {
+        transform: translateX(10px);
+        opacity: 0.9;
+    }
+}
+
+.jellyfish {
+    position: absolute;
+    width: 40px;
+    height: 50px;
+    opacity: 0;
+    pointer-events: none;
+    z-index: 3;
+    animation: jellyfishAppear 5s ease-in-out forwards;
+}
+
+.jellyfish-body {
+    width: 40px;
+    height: 30px;
+    background: radial-gradient(ellipse at center top, 
+        rgba(255, 255, 255, 0.9) 0%, 
+        rgba(220, 220, 220, 0.7) 40%, 
+        rgba(180, 180, 180, 0.5) 80%, 
+        rgba(150, 150, 150, 0.3) 100%);
+    border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%;
+    position: relative;
+    box-shadow: inset 0 -5px 15px rgba(255, 255, 255, 0.4);
+}
+
+.jellyfish-tentacle {
+    position: absolute;
+    top: 28px;
+    width: 2px;
+    background: linear-gradient(to bottom, 
+        rgba(200, 200, 200, 0.8) 0%, 
+        rgba(160, 160, 160, 0.4) 100%);
+    animation: tentacleFloat 2s ease-in-out infinite;
+}
+
+.jellyfish-tentacle:nth-child(1) { left: 8px; height: 22px; animation-delay: 0s; }
+.jellyfish-tentacle:nth-child(2) { left: 15px; height: 28px; animation-delay: 0.3s; }
+.jellyfish-tentacle:nth-child(3) { left: 22px; height: 25px; animation-delay: 0.6s; }
+.jellyfish-tentacle:nth-child(4) { left: 29px; height: 24px; animation-delay: 0.9s; }
+
+@keyframes tentacleFloat {
+    0%, 100% {
+        transform: rotate(-5deg);
+        opacity: 0.6;
+    }
+    50% {
+        transform: rotate(5deg);
+        opacity: 0.9;
+    }
+}
+
+@keyframes jellyfishAppear {
+    0% {
+        opacity: 0;
+        bottom: -60px;
+        transform: translateX(0);
+    }
+    40% {
+        opacity: 0;
     }
     60% {
         opacity: 0.7;
-        transform: scale(1.1) translateY(30px);
+        bottom: 120px;
+    }
+    80% {
+        opacity: 0.9;
+        bottom: 160px;
+        transform: translateX(10px);
     }
     100% {
-        opacity: 0;
-        transform: scale(0.3) translateY(80px);
-    }
-}
-
-.water-splash {
-    position: absolute;
-    pointer-events: none;
-    z-index: 6;
-}
-
-.water-splash-circle {
-    position: absolute;
-    border-radius: 50%;
-    background: radial-gradient(circle, rgba(77, 208, 225, 0.8), rgba(0, 119, 182, 0.4), transparent);
-    animation: waterSplash 1s ease-out forwards;
-}
-
-@keyframes waterSplash {
-    0% {
-        width: 10px;
-        height: 10px;
-        opacity: 1;
-        transform: scale(0);
-    }
-    50% {
         opacity: 0.8;
-        transform: scale(1);
-    }
-    100% {
-        width: 80px;
-        height: 80px;
-        opacity: 0;
-        transform: scale(1.5);
+        bottom: 200px;
+        transform: translateX(-5px);
     }
 }
 
-.water-ripple {
+.water-bubble {
     position: absolute;
-    width: 6px;
-    height: 6px;
+    width: 8px;
+    height: 8px;
+    background: radial-gradient(circle at 30% 30%, 
+        rgba(255, 255, 255, 0.8), 
+        rgba(72, 202, 228, 0.3));
     border-radius: 50%;
-    background: radial-gradient(circle, #4dd0e1, #0077b6);
     pointer-events: none;
-    animation: waterRipple 1.8s ease-out forwards;
-    box-shadow: 0 0 6px rgba(77, 208, 225, 0.6);
+    z-index: 4;
+    animation: bubbleRise 3s ease-out forwards;
 }
 
-@keyframes waterRipple {
+@keyframes bubbleRise {
     0% {
-        opacity: 1;
-        transform: scale(1) rotate(0deg);
+        opacity: 0;
+        bottom: 0px;
+        transform: translateX(0) scale(0.5);
     }
-    25% {
-        opacity: 0.8;
-        transform: scale(1.5) rotate(90deg) translateX(30px);
-    }
-    50% {
+    20% {
         opacity: 0.6;
-        transform: scale(2) rotate(180deg) translateX(50px);
+        transform: translateX(5px) scale(1);
     }
-    75% {
-        opacity: 0.3;
-        transform: scale(2.5) rotate(270deg) translateX(70px);
+    50% {
+        opacity: 0.8;
+        transform: translateX(-3px) scale(1.2);
+    }
+    80% {
+        opacity: 0.4;
+        transform: translateX(8px) scale(0.8);
     }
     100% {
         opacity: 0;
-        transform: scale(3) rotate(360deg) translateX(90px);
+        bottom: 100%;
+        transform: translateX(-2px) scale(0.3);
     }
 }
 

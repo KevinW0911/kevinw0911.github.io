@@ -79,11 +79,11 @@ class FireGame {
         this.clickCounter++;
         
         this.playWaterSound();
-        this.createWaterBurst();
+        this.createOceanRise();
         
         setTimeout(() => {
             this.isWatering = false;
-        }, 500);
+        }, 5000);
     }
     
     createFireBurst() {
@@ -186,30 +186,85 @@ class FireGame {
         }
     }
     
-    createWaterBurst() {
-        const centerX = this.gameArea.offsetWidth / 2;
-        const centerY = this.gameArea.offsetHeight / 2;
+    createOceanRise() {
+        const waterLevel = document.createElement('div');
+        waterLevel.className = 'water-level';
+        this.gameArea.appendChild(waterLevel);
         
-        for (let i = 0; i < 12; i++) {
+        const waterSurface = document.createElement('div');
+        waterSurface.className = 'water-surface';
+        waterLevel.appendChild(waterSurface);
+        
+        setTimeout(() => {
+            this.createJellyfish();
+            this.createBubbles();
+        }, 2000);
+        
+        setTimeout(() => {
+            if (waterLevel.parentNode) {
+                waterLevel.parentNode.removeChild(waterLevel);
+            }
+        }, 5000);
+    }
+    
+    createJellyfish() {
+        const jellyfishCount = 4 + Math.floor(Math.random() * 4);
+        
+        for (let i = 0; i < jellyfishCount; i++) {
             setTimeout(() => {
-                const angle = (Math.PI * 2 * i) / 12;
-                const distance = 40 + Math.random() * 80;
-                const x = centerX + Math.cos(angle) * distance;
-                const y = centerY + Math.sin(angle) * distance;
+                const jellyfish = document.createElement('div');
+                jellyfish.className = 'jellyfish';
                 
-                this.createWaterParticle(x, y);
-            }, i * 60);
+                const jellyfishBody = document.createElement('div');
+                jellyfishBody.className = 'jellyfish-body';
+                
+                for (let j = 1; j <= 4; j++) {
+                    const tentacle = document.createElement('div');
+                    tentacle.className = 'jellyfish-tentacle';
+                    jellyfishBody.appendChild(tentacle);
+                }
+                
+                jellyfish.appendChild(jellyfishBody);
+                
+                const x = 20 + Math.random() * (this.gameArea.offsetWidth - 80);
+                jellyfish.style.left = x + 'px';
+                
+                this.gameArea.appendChild(jellyfish);
+                
+                setTimeout(() => {
+                    if (jellyfish.parentNode) {
+                        jellyfish.parentNode.removeChild(jellyfish);
+                    }
+                }, 5000);
+                
+            }, i * 300);
         }
-        
-        for (let i = 0; i < 15; i++) {
+    }
+    
+    createBubbles() {
+        for (let i = 0; i < 10; i++) {
             setTimeout(() => {
-                const x = centerX + (Math.random() - 0.5) * 150;
-                const y = centerY + (Math.random() - 0.5) * 120;
-                this.createWaterDrop(x, y);
-            }, i * 40);
+                const bubble = document.createElement('div');
+                bubble.className = 'water-bubble';
+                
+                const x = Math.random() * this.gameArea.offsetWidth;
+                bubble.style.left = x + 'px';
+                bubble.style.bottom = '0px';
+                
+                const size = 4 + Math.random() * 8;
+                bubble.style.width = size + 'px';
+                bubble.style.height = size + 'px';
+                
+                this.gameArea.appendChild(bubble);
+                
+                setTimeout(() => {
+                    if (bubble.parentNode) {
+                        bubble.parentNode.removeChild(bubble);
+                    }
+                }, 3000);
+                
+            }, i * 200);
         }
-        
-        this.createWaterSplash(centerX, centerY);
     }
     
     createWaterSplash(x, y) {
@@ -451,17 +506,17 @@ class FireGame {
         oscillator.connect(gainNode);
         gainNode.connect(audioContext.destination);
         
-        oscillator.frequency.setValueAtTime(800, audioContext.currentTime);
-        oscillator.frequency.exponentialRampToValueAtTime(400, audioContext.currentTime + 0.3);
-        oscillator.frequency.exponentialRampToValueAtTime(200, audioContext.currentTime + 0.6);
+        oscillator.frequency.setValueAtTime(150, audioContext.currentTime);
+        oscillator.frequency.exponentialRampToValueAtTime(80, audioContext.currentTime + 1);
+        oscillator.frequency.exponentialRampToValueAtTime(40, audioContext.currentTime + 2);
         
-        gainNode.gain.setValueAtTime(0.2, audioContext.currentTime);
-        gainNode.gain.exponentialRampToValueAtTime(0.1, audioContext.currentTime + 0.3);
-        gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.6);
+        gainNode.gain.setValueAtTime(0.15, audioContext.currentTime);
+        gainNode.gain.exponentialRampToValueAtTime(0.1, audioContext.currentTime + 1);
+        gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 2);
         
         oscillator.type = 'sine';
         oscillator.start(audioContext.currentTime);
-        oscillator.stop(audioContext.currentTime + 0.6);
+        oscillator.stop(audioContext.currentTime + 2);
     }
 }
 
