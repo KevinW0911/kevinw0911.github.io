@@ -130,14 +130,7 @@ class FireGame {
         const explosionCircle = document.createElement('div');
         explosionCircle.className = 'explosion-circle';
         
-        const explosionColors = [
-            'radial-gradient(circle, #ffffff, #ffff00, #ff6600, #ff0000, #8b0000, transparent)',
-            'radial-gradient(circle, #ffffff, #ffff00, #ff6600, #ff0000, #8b0000, transparent)',
-            'radial-gradient(circle, #ffffff, #f0f0f0, #d3d3d3, #a9a9a9, #696969, transparent)',
-            'radial-gradient(circle, #ffffff, #e6e6e6, #cccccc, #808080, #404040, transparent)'
-        ];
-        
-        explosionCircle.style.background = explosionColors[Math.floor(Math.random() * explosionColors.length)];
+        explosionCircle.style.background = 'radial-gradient(circle, #ffffff, #ffff00, #ff6600, #ff0000, #8b0000, transparent)';
         explosion.appendChild(explosionCircle);
         
         for (let i = 0; i < 24; i++) {
