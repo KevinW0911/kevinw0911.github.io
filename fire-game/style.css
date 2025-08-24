@@ -539,7 +539,8 @@ h1 {
 @media (max-width: 600px) {
     body {
         padding-top: 10px;
-        align-items: flex-start;
+        align-items: center;
+        min-height: 100vh;
     }
     
     .game-container {
@@ -548,17 +549,16 @@ h1 {
         width: 100vw;
         max-width: none;
         border-radius: 0;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        min-height: 100vh;
     }
     
     .game-area {
         width: 90vw;
-        height: 50vh;
-        max-height: 400px;
-    }
-    
-    h1 {
-        font-size: 1.8rem;
-        margin-bottom: 15px;
+        height: 60vh;
+        max-height: 450px;
     }
     
     .controls {
@@ -566,7 +566,7 @@ h1 {
         justify-content: center;
         align-items: center;
         gap: 15px;
-        margin: 15px 0;
+        margin: 20px 0 10px 0;
     }
     
     .fire-button, .bomb-button, .water-button {
